@@ -4,10 +4,22 @@ import Cart from './Cart'
 import Footer from './Footer'
 import ShoppingList from './ShoppingList'
 import '../styles/Layout.css'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 function App() {
-  const [cart, updateCart] = useState([])
+	const savedCart = localStorage.getItem('cart');
+  const [cart, updateCart] = useState(savedCart ? JSON.parse(savedCart) : [])
+	const [catSelected, setCatSelected] = useState("...");
+	const [isFooterShown, setIsFooterShown] = useState(true);
+
+	function handleClick() {
+		setIsFooterShown(!isFooterShown);
+	}
+
+	useEffect (() => {
+		localStorage.setItem('cart', JSON.stringify(cart));
+    console.log("Le panier est sauvegardé");
+	}, [cart])
 
 	return (
 		<div>
@@ -16,10 +28,15 @@ function App() {
 				<h1 className='lmj-title'>La maison jungle</h1>
 			</Banner>
 			<div className='lmj-layout-inner'>
-        <Cart cart={cart} updateCart={updateCart} />
-				<ShoppingList cart={cart} updateCart={updateCart} />
+        <Cart catSelected={catSelected} cart={cart} updateCart={updateCart} />
+				<ShoppingList catSelected={catSelected} setCatSelected={setCatSelected} cart={cart} updateCart={updateCart} />
 			</div>
-			<Footer />
+			<button onClick={handleClick}>
+				{isFooterShown ?
+					<div>Cacher</div> :
+					<div>Afficher</div>}
+			</button>
+			{isFooterShown && <Footer />}
 		</div>
 	)
 }

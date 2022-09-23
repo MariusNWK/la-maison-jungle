@@ -1,16 +1,31 @@
-import { useState } from 'react'
-import '../styles/Cart.css'
+import { useEffect, useState } from "react";
+import "../styles/Cart.css";
 
-function Cart({ cart, updateCart }) {
-  const [isOpen, setIsOpen] = useState(true)
+function Cart({ catSelected, cart, updateCart }) {
+  const [isOpen, setIsOpen] = useState(true);
   const total = cart.reduce(
     (acc, plantType) => acc + plantType.amount * plantType.price,
     0
-  )
+  );
+
+  useEffect(() => {
+    document.title = `LMJ: ${total}€ d'achats`;
+  }, [total, catSelected])
+
+  /*
+  Comment faire pour exécuter un effet uniquement après le premier render de mon composant ?
+  Par exemple, si je veux récupérer des données sur une API ?
+  Eh bien, dans ce cas, il faut renseigner un tableau de dépendances vide :
+
+  useEffect(() => {
+    alert('Bienvenue dans La maison jungle');
+  }, [])
+  */
+
   return isOpen ? (
-    <div className='lmj-cart'>
+    <div className="lmj-cart">
       <button
-        className='lmj-cart-toggle-button'
+        className="lmj-cart-toggle-button"
         onClick={() => setIsOpen(false)}
       >
         Fermer
@@ -33,15 +48,15 @@ function Cart({ cart, updateCart }) {
       )}
     </div>
   ) : (
-    <div className='lmj-cart-closed'>
+    <div className="lmj-cart-closed">
       <button
-        className='lmj-cart-toggle-button'
+        className="lmj-cart-toggle-button"
         onClick={() => setIsOpen(true)}
       >
         Ouvrir le Panier
       </button>
     </div>
-  )
+  );
 }
 
-export default Cart
+export default Cart;
